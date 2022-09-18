@@ -1,12 +1,18 @@
 import { Add, Remove } from "@mui/icons-material";
+import { useSelector } from "react-redux";
 import styled from "styled-components"
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import { mobile } from "../responsive";
+import StripeCheckout from "react-stripe-checkout";
+import { useEffect, useState } from "react";
+import { userRequest } from "../requestMethods";
+import { useNavigate } from "react-router-dom";
+
+const KEY = process.env.REACT_APP_STRIPE;
 
 const Container = styled.div`
-
 `;
 
 const Wrapper = styled.div`
@@ -153,11 +159,28 @@ const Button = styled.button`
     font-weight: 600;
 `;
 
-
-
-
 const Cart = () => {
-  return (
+    const cart = useSelector(state=>state.cart)
+    const [stripeToken, setStripeToken] = useState(null)
+    const navigate = useNavigate()
+    const onToken= (token)=>{
+        setStripeToken(token)
+    }
+    
+    useEffect(()=>{
+        const makeRequest = async ()=>{
+            try{
+                const res = await userRequest.post("/checkout/payment", {
+                    tokenId: stripeToken.id,
+                    amount: 500,
+                });
+                navigate.push("/success", {data: res.data})
+            }catch{}
+        };
+        stripeToken && makeRequest();
+    }, [stripeToken, cart.total, navigate]);
+    
+    return (
     <Container>
         <Announcement/>
         <Navbar/>
@@ -173,53 +196,35 @@ const Cart = () => {
             </Top>
             <Bottom>
                 <Info>
-                    <Product>
-                        <ProductDetail>
-                            <Image src="https://hamilton.com.ar/wp-content/uploads/2022/05/HMT001.jpg"/>
-                            <Details>
-                                <ProductName><b>Producto: </b>Minitorno 130W</ProductName>
-                                <ProductId><b>ID: </b>HMT001</ProductId>
-                                <ProductColor color="black"/>
-                                <ProductSize>lalalala</ProductSize>
-                            </Details>
-                        </ProductDetail>
-                        <PriceDetail>
-                            <ProductAmountContainer>
-                                <Add/>
-                                    <ProductAmount>2</ProductAmount>
-                                <Remove/>
-                            </ProductAmountContainer>
-                            <ProductPrice>$ 15,000</ProductPrice>
-                            
-                        </PriceDetail>
-                    </Product>
+                    {cart.products.map((product) => (
+                        <Product>
+                            <ProductDetail>
+                                <Image src={product.img}/>
+                                <Details>
+                                    <ProductName><b>Producto: </b>{product.title}</ProductName>
+                                    <ProductId><b>ID: </b>{product._id}</ProductId>
+                                    <ProductColor color={product.color}/>
+                                    <ProductSize>{product.size}</ProductSize>
+                                </Details>
+                            </ProductDetail>
+                            <PriceDetail>
+                                <ProductAmountContainer>
+                                    <Add/>
+                                        <ProductAmount>{product.quantity}</ProductAmount>
+                                    <Remove/>
+                                </ProductAmountContainer>
+                                <ProductPrice>$ {product.price*product.quantity}</ProductPrice>  
+                            </PriceDetail>
+                        </Product>
+                    ))}
                     <Hr/>
-                    <Product>
-                        <ProductDetail>
-                            <Image src="https://hamilton.com.ar/wp-content/uploads/2022/05/HMT001.jpg"/>
-                            <Details>
-                                <ProductName><b>Producto: </b>Minitorno 130W</ProductName>
-                                <ProductId><b>ID: </b>HMT001</ProductId>
-                                <ProductColor color="black"/>
-                                <ProductSize>lalalala</ProductSize>
-                            </Details>
-                        </ProductDetail>
-                        <PriceDetail>
-                            <ProductAmountContainer>
-                                <Add/>
-                                    <ProductAmount>2</ProductAmount>
-                                <Remove/>
-                            </ProductAmountContainer>
-                            <ProductPrice>$ 15,000</ProductPrice>
-                            
-                        </PriceDetail>
-                    </Product>
+                    
                 </Info>
                 <Summary>
                     <SummaryTitle>Resumen de Compra</SummaryTitle>
                     <SummaryItem>
                         <SummaryItemText>Sub-Total</SummaryItemText>
-                        <SummaryItemPrice>$ 1,000</SummaryItemPrice>
+                        <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
                     </SummaryItem>
                     <SummaryItem>
                         <SummaryItemText>Costo de envío</SummaryItemText>
@@ -227,9 +232,20 @@ const Cart = () => {
                     </SummaryItem>
                     <SummaryItem type="total">
                         <SummaryItemText>Total</SummaryItemText>
-                        <SummaryItemPrice>$ 1,400</SummaryItemPrice>
+                        <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
                     </SummaryItem>
-                    <Button>Finalizar Compra</Button>
+                    <StripeCheckout
+                        name = "SteelBit"
+                        image = "https://hamilton.com.ar/wp-content/uploads/2020/10/logo-cabecera-hamilton.svg"
+                        billingAddress
+                        shippingAddress
+                        descirption={`Su total es $ ${cart.total}`}
+                        amount={cart.total*100}
+                        token={onToken}
+                        stripeKey={KEY}
+                    >
+                        <Button>Finalizar Compra</Button>
+                    </StripeCheckout>
                 </Summary>
             </Bottom>
         </Wrapper>

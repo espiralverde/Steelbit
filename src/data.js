@@ -26,16 +26,20 @@ export const categories = [
         id: 1,
         img:"https://hamilton.com.ar/wp-content/uploads/2022/01/ULT111.jpg",
         title:"BATERÍA",
+        cat: "bateria",
     },
     {
         id: 2,
         img:"https://hamilton.com.ar/wp-content/uploads/2022/01/HAA002.jpg",
         title:"ELÉCTRICAS",
+        cat: "electrica",
     },
     {
         id: 3,
         img:"https://hamilton.com.ar/wp-content/uploads/2022/01/PG200.jpg",
         title:"NEUMÁTICAS",
+        cat: "neumatica",
+
     },
 ];
 export const popularProducts = [
@@ -51,10 +55,6 @@ export const popularProducts = [
         id: 3,
         img:"https://hamilton.com.ar/wp-content/uploads/2020/10/ULT112.jpg",
     },
-    // {
-    //     id: 4,
-    //     img:"https://hamilton.com.ar/wp-content/uploads/2022/01/HAI001.jpg",
-    // },
     {
         id: 5,
         img:"https://hamilton.com.ar/wp-content/uploads/2022/03/HCE001.jpg",
