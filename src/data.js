@@ -1,4 +1,4 @@
-export const sliderItems = [
+export const sliderItems = [// de esta parte salen las opciones del slider
     {
         id: 1,
         img:"https://hamilton.com.ar/wp-content/uploads/2022/01/banner-abateria-hamilton.jpg",
@@ -21,7 +21,7 @@ export const sliderItems = [
         bg:"fbf0f4",
     },
 ];
-export const categories = [
+export const categories = [ // de esta parte salen las 3 categorías puestas en la página principal.
     {
         id: 1,
         img:"https://hamilton.com.ar/wp-content/uploads/2022/01/ULT111.jpg",

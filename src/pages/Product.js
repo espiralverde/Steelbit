@@ -1,5 +1,4 @@
 import { Add, Remove } from "@mui/icons-material";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components"

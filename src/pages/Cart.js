@@ -163,19 +163,20 @@ const Cart = () => {
     const cart = useSelector(state=>state.cart)
     const [stripeToken, setStripeToken] = useState(null)
     const navigate = useNavigate()
-    const onToken= (token)=>{
-        setStripeToken(token)
-    }
+    
+    const onToken = (token)=>{
+        setStripeToken(token);
+    };
     
     useEffect(()=>{
-        const makeRequest = async ()=>{
+        const makeRequest = async () => {
             try{
                 const res = await userRequest.post("/checkout/payment", {
                     tokenId: stripeToken.id,
-                    amount: 500,
+                    amount: 20000,
                 });
-                navigate.push("/success", {data: res.data})
-            }catch{}
+                navigate.push("/success",{data: res.data})
+            }catch{ }
         };
         stripeToken && makeRequest();
     }, [stripeToken, cart.total, navigate]);
@@ -230,17 +231,21 @@ const Cart = () => {
                         <SummaryItemText>Costo de envío</SummaryItemText>
                         <SummaryItemPrice>$ 400</SummaryItemPrice>
                     </SummaryItem>
+                    <SummaryItem>
+                        <SummaryItemText>Descuento</SummaryItemText>
+                        <SummaryItemPrice>- $ 400</SummaryItemPrice>
+                    </SummaryItem>
                     <SummaryItem type="total">
                         <SummaryItemText>Total</SummaryItemText>
                         <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
                     </SummaryItem>
                     <StripeCheckout
-                        name = "SteelBit"
+                        name = "SteelBit Power Store"
                         image = "https://hamilton.com.ar/wp-content/uploads/2020/10/logo-cabecera-hamilton.svg"
                         billingAddress
                         shippingAddress
-                        descirption={`Su total es $ ${cart.total}`}
-                        amount={cart.total*100}
+                        description={`Su total es $${cart.total}`}
+                        amount={cart.total * 100}
                         token={onToken}
                         stripeKey={KEY}
                     >

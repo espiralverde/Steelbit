@@ -15,7 +15,7 @@ font-weight: 500;
 const Announcement = () => {
   return (
     <Container>
-        Compre... Llame ya!
+        Para publicitar
     </Container>
   )
 }

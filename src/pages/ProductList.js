@@ -47,7 +47,7 @@ const ProductList = () => {
         const value = e.target.value;
         setFilters({
             ...filters,
-        [e.target.name]: value,
+        [e.target.name]: value, //acá puedo poner "value.toLowecase" para que tome todo en minúsculas. Para eso tengo que cargarlo de esa forma en la base de datos
         })
     }
 
